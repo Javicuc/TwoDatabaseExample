@@ -1,65 +1,92 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# TwoDatabaseExample
+Ejemplo de conexión a dos bases de datos en laravel con gestores diferentes (MySQL y PostgreSQL).
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## Getting Started
 
-## About Laravel
+Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en su máquina local para fines de desarrollo y prueba.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+### Prerequisites
+Tener nociones basicas de laravel y con entornos de trabajo dedicados a este.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Steps
+* Descargar e instalar laragon (Version WAMP) https://laragon.org/download/index.html
+* Descargar binarios de postgreSQL https://www.enterprisedb.com/download-postgresql-binaries
+* Colocar los binarios de postgres en Laragon 
+``` 
+  1 Dirigete a la direccion local de tu equipo en la carpeta de laragon: C:\laragon
+  2 Copia los binarios de postgres que descargaste y pegalos en la siguiente ubicación
+		C:\laragon\bin\postgresql
+		Nota: si no existe la carpeta postgresql, crearla
+  3 Descomprimir los binarios de la siguiente forma:
+		3.1 Crear una carpeta con el nombre de los binarios de postgres
+			Ejem: postgresql-9.6.10-1-windows-x64-binaries
+		3.2 Abrir los binarios con un gestor de archivos comprimidos (winrar, 7zip)
+		3.3 Entrar en la carpeta pgsql de los binarios comprimidos
+		3.4 Extraer todas las carpetas y archivos dentro de la carpeta que creamos anteriormente (postgresql-9.6.10-1-windows-x64-binaries)
+```
+* Configurar el arhivo php.ini
+```
+  1- Iniciar laragon en modo administrador
+  2- Dirigirse al icono que aparece en la barra de tareas de laragon y dar click derecho
+  3- Dirigirse a la pestaña de PHP, y despues dar un clic en php.ini	
+  4- Laragon incluye por defecto un editor de texto (Notepad++), presionar ctrl+f y buscar pdo y dar click en "find next"
+  5- Descomentar las siguientes lineas de codigo quitando el punto y coma del inicio:
+		    * extension=php_pdo_pgsql.dll
+		    * extension=php_pgsql.dll
+  6- Guardar el archivo
+	      * Nota: Si pide abrir el editor como administrar, dar click en permitir y volver a guardar el archivo
+```
+* Configurar proyectos laravel en laragon para inicializar con dos gestores de bases de datos
+```
+  1- Iniciar laragon en modo administrador (Puedes dejar seteada esta configuracion en las propiedades del acceso directo)
+  2- Dar click en "preferences" (Icono de engrane)
+  3- Revisar que este palomeada la opcion de Auto virtual hosts
+	  3.1- Cambiar el nombre de hostname {name}.dev por {name}.test
+  4- Dirigirse a la pestaña de "Services & Ports"
+	  4.1- Tener palomeadas las siguientes opciones:
+			  * Apache (Verificar que este en el puerto 80)
+			  * MySQL (Verificar que este en el puerto 3306)
+			              ----En advanced----
+			  * PostgreSQL (Verificar que este en el puerto 5432)
+			  * Nginx (Verificar que este en el puerto 8080)
+  5- Reinicar laragon
+```
+* Inicializar laragon y dar click en "Start All"
+* Crear las bases de datos MySQL desde laragon > Database
+```
+Nombre: basedatos1 y en collation: utf8mb4_unicode_ci
+```
+* Crear base de datos PostgreSQL desde laragon > postgresql > pgAdmin4
+```
+  1- Crear un nuevo grupo de servers con el nombre que tu desees
+  2- Crear la base de datos en el nuevo servidor de grupos, click derecho y create database con los siguientes datos:
+		  * Nombre: basedatos2
+		  * owner: postgres
+		  * encoding: UTF8
+		  * Tablespace: pg_default
+		  * collation: Spanish_Mexico.1252 (Si no existe dejar en blanco)
+		  * Character Type: Spanish_Mexico.1252 (Si no existe dejar en blanco)
+  3 Dar click en guardar.
+```
+* Descargar el proyecto y guardarlo en la siguiente ruta: ``` c:\laragon\www\ ```
+* Renombra el archivo  ``` .env.example  ``` a  ``` .env  ``` (contiene los parametros utilizados para la conexion a la base de datos).
+* Ejecuta el siguiente comando ```composer install``` 
+* Ejecuta el siguiente comando ``` php artisan key:generate ```
+* Ejecuta el siguiente comando ``` php artisan migrate:refresh --seed --database="pgsql" ```
+* Ejecuta el siguiente comando ``` php artisan migrate:refresh --seed --database="mysql" ```
+* Ejecuta el siguiente comando ``` php artisan serve ```
+```
+Nota: Puedes remplazar facilmente estos parametros por las credenciales de tus bases de datos alojadas en servidores.
+```
+## Running
+Una vez configurado el proyecto puedes probar estas rutas de ejemplo para observar su comportamiento
+```
+Ruta de ejemplo: 
+* http://mysqlpostgreexample.test/api/user/POSTGRES  
+* http://mysqlpostgreexample.test/api/user/MYSQL
+* http://mysqlpostgreexample.test/api/user/SQLITE
+```
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
-
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Built With
+* [Laravel](https://laravel.com/docs/5.7) - Framework utilizado
+* [Laragon](https://laragon.org/download/index.html) - Entorno de desarrollo para laravel
